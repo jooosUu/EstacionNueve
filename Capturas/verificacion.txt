@@ -1,0 +1,38 @@
+﻿Estacion Nueve - verificacion automatica del prototipo
+Comando: UnrealEditor-Cmd.exe EstacionNueve.uproject -game -nullrhi -nosound -windowed -enautotest
+
+Resultado: 31/31 comprobaciones OK
+
+LogTemp: Warning: EN_AUTOTEST|PASS|GameStateExiste
+LogTemp: Warning: EN_AUTOTEST|PASS|CyrusExiste
+LogTemp: Warning: EN_AUTOTEST|PASS|HUDCreado
+LogTemp: Warning: EN_AUTOTEST|START|game=L_Nivel1
+LogTemp: Warning: EN_AUTOTEST|PASS|Parcelas>=4 (4)
+LogTemp: Warning: EN_AUTOTEST|PASS|Vetas>=10 (10)
+LogTemp: Warning: EN_AUTOTEST|PASS|Valvulas>=2 (2)
+LogTemp: Warning: EN_AUTOTEST|PASS|Porton>=1 (1)
+LogTemp: Warning: EN_AUTOTEST|PASS|Checkpoints>=5 (6)
+LogTemp: Warning: EN_AUTOTEST|PASS|Dinosaurios>=6 (6)
+LogTemp: Warning: EN_AUTOTEST|PASS|Viajes>=2 (2)
+LogTemp: Warning: EN_AUTOTEST|PASS|Objetivos=9 (9)
+LogTemp: Warning: EN_AUTOTEST|PASS|CyrusEnInicio (0 cm)
+LogTemp: Warning: EN_AUTOTEST|PASS|RuidoSuma (50)
+LogTemp: Warning: EN_AUTOTEST|PASS|Parcela0Encontrada
+LogTemp: Warning: EN_AUTOTEST|PASS|Huerto_Arar
+LogTemp: Warning: EN_AUTOTEST|PASS|Huerto_Sembrar
+LogTemp: Warning: EN_AUTOTEST|PASS|Huerto_RegarDosVeces
+LogTemp: Warning: EN_AUTOTEST|PASS|Objetivo_Huerto
+LogTemp: Warning: EN_AUTOTEST|PASS|ValvulaYPortonP1
+LogTemp: Warning: EN_AUTOTEST|PASS|PortonAbierto
+LogTemp: Warning: EN_AUTOTEST|PASS|Objetivo_Porton
+LogTemp: Warning: EN_AUTOTEST|PASS|VetaEncontrada
+LogTemp: Warning: EN_AUTOTEST|PASS|MinarVeta
+LogTemp: Warning: EN_AUTOTEST|PASS|RefineriaEncontrada
+LogTemp: Warning: EN_AUTOTEST|PASS|RefinarResina
+LogTemp: Warning: EN_AUTOTEST|PASS|CompraSemillas ($17)
+LogTemp: Warning: EN_AUTOTEST|PASS|SemillasRecibidas
+LogTemp: Warning: EN_AUTOTEST|PASS|GuardadoAlDormir
+LogTemp: Warning: EN_AUTOTEST|PASS|NocheEmpieza
+LogTemp: Warning: EN_AUTOTEST|PASS|CarnotaurusAparece
+LogTemp: Warning: EN_AUTOTEST|PASS|Reloj (22:11)
+LogTemp: Warning: EN_AUTOTEST|RESULT=PASS|pass=31|fail=0
