@@ -1,0 +1,33 @@
+# Visual Studio / Rider
+.vs/
+.idea/
+*.sln
+*.suo
+*.user
+*.userprefs
+
+# Unreal Engine temporary & cache folders
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+scratch/
+*.py
+*.ps1
+Docs/
+Content/Scene_UnfinishedBuilding/
+Content/RockEnv_Pack/
+Content/MWLandscapeAutoMaterial/
+Content/Fab/Dirty_concrete_wall_with_green_metal_door/dirty_concrete_wall_with_green_metal_door/Textures/
+Content/AnimatedWoodenCrateV1/DemoLevel/
+Content/__ExternalActors__/AnimatedStorageBox/
+Content/__ExternalActors__/AnimatedWoodenCrateV1/
+Content/__ExternalObjects__/AnimatedWoodenCrateV1/
+AnimatedWoodenCrate.png
+
