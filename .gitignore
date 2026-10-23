@@ -30,8 +30,12 @@ CrashReportClient/
 Thumbs.db
 desktop.ini
 
-# Python bytecode
+# Python bytecode & Scripts
 __pycache__/
 *.py[cod]
 *$py.class
+Scripts/
+*.t3d
 
+# Temporary Editor Plugins
+Plugins/
