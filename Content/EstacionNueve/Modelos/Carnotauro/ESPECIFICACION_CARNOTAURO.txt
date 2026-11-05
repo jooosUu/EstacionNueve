@@ -1,0 +1,54 @@
+ORDEN PARA AURA - Importar y montar el Carnotauro de DinoWest
+
+Reglas: no uses emojis. No toques herramientas existentes (pico, pala, rayo compresor, inventario, AC_*). No modifiques BT_Dino, BB_Dino, AIC_Dino. No borres assets existentes: Carnotauro_Anterior, M_Carnotaurus y el retarget se quedan como estan.
+Antes de empezar, guarda todo y confirma que L_Caverna se puede abrir. Trabaja un paso a la vez y compila al final de cada paso.
+
+Archivos (ya estan en disco, rutas locales):
+- FBX: C:\DinoWest\DW_Carnotauro_UE5.fbx
+- Base Color: C:\DinoWest\DW_Carnotauro_Piel_NegroRojo.png
+- Normal: C:\DinoWest\DW_Carnotauro_Normales.png
+- Ojos: C:\DinoWest\DW_Carnotauro_Ojos.png
+
+Datos del FBX: ejes -Y adelante, Z arriba, escala 1.0 (metros convertidos a cm por Unreal). Contiene 1 armature (Armature_Carnotaurus), el cuerpo y la montura (silla, cabezada, cadena) como mallas parentadas al esqueleto. Huesos clave: Roof (raiz), bip_pelvis, bip_spine_0, Socket_Silla_Montura (hijo de bip_spine_0), bip_head, bip_jaw, bip_tongue_M, Cadena_L_00..11 y Cadena_R_00..11 (la cadena esta animada con huesos). Animaciones: Idle, Walk, Run, Roar, Attack_HornRam. Walk y Run son en el sitio (sin avance); el movimiento lo da el CharacterMovement.
+
+PASO 1 - Importar
+1. Content Browser: /Game/Excavacion/Modelos/carnotaurus/ (la carpeta ya existe con los assets de prueba).
+2. Import: DW_Carnotauro_UE5.fbx. Opciones: Skeletal Mesh, Import Mesh y Import Animations activados, Create Physics Asset activado, Convert Scene Unit desactivado, Force Front XAxis desactivado, Import Materials activado, Import Textures desactivado. Skeleton: nuevo.
+3. Renombra: la malla del cuerpo y de la montura quedan en un solo Skeletal Mesh: nombralo SKM_Carnotauro. El skeleton: SK_Carnotauro. El physics asset: PA_Carnotauro. Las animaciones van a /Game/Excavacion/Modelos/carnotaurus/Animaciones/ con prefijo A_Carno_: A_Carno_Idle, A_Carno_Walk, A_Carno_Run, A_Carno_Roar, A_Carno_Attack_HornRam.
+4. Abre SK_Carnotauro y confirma que existe el socket/hueso Socket_Silla_Montura. Si no existe como socket, agrega un Socket con ese nombre sobre el hueso Socket_Silla_Montura, offset 0,0,0.
+5. Loop: Idle, Walk y Run con Loop Animation activado. Roar y Attack_HornRam sin loop. Activa Root Motion solo en Attack_HornRam.
+
+PASO 2 - Material
+1. Importa las tres texturas a /Game/Excavacion/Modelos/carnotaurus/Texturas/: T_Carno_BaseColor (sRGB), T_Carno_Normal (compresion Normal map, sRGB apagado, Flip Green Channel apagado), T_Carno_Ojos (sRGB).
+2. Crea M_Carnotauro en /Game/Excavacion/Modelos/carnotaurus/ (NO sobrescribas /Game/Materials/M_Carnotaurus). Dominio Surface, Opaque, Default Lit. BaseColor = T_Carno_BaseColor, Normal = T_Carno_Normal, Roughness = 0.62 constante, Metallic = 0.
+3. Crea M_Carnotauro_Ojos con T_Carno_Ojos en BaseColor, Roughness 0.2.
+4. Asigna M_Carnotauro al slot del cuerpo y de la lengua/boca, y M_Carnotauro_Ojos al slot de los ojos. Los slots de silla, cabezada, cadena y hierro: crea instancias simples M_Cuero_Silla (marron oscuro 0.12,0.06,0.03, roughness 0.55), M_Cuero_Negro (0.02,0.02,0.02, roughness 0.5), M_Hierro_Cadena (0.25,0.12,0.05, metallic 0.85, roughness 0.55) y M_Metal_Plata (0.7,0.7,0.72, metallic 1, roughness 0.3), segun el nombre del slot.
+
+PASO 3 - Animation Blueprint
+1. Crea ABP_Carnotauro_Montura (parent AnimInstance, skeleton SK_Carnotauro) en /Game/Excavacion/IA/. No edites ABP_DinoCarnotauro.
+2. Variables: Speed (float), IsAttacking (bool), IsRoaring (bool). En Event Blueprint Update Animation: Speed = longitud de Try Get Pawn Owner -> Get Velocity (XY).
+3. State machine Locomotion: Idle (A_Carno_Idle) -> Walk (A_Carno_Walk) cuando Speed > 20 -> Run (A_Carno_Run) cuando Speed > 350. Vuelta con las condiciones inversas. Usa un Blend Space 1D BS_Carno_Locomotion (Speed 0..600: Idle, 150 Walk, 450 Run) si prefieres.
+4. Slot "UpperBody" no hace falta. Crea dos AnimMontage: AM_Carno_Roar (A_Carno_Roar) y AM_Carno_Ataque (A_Carno_Attack_HornRam), con el slot DefaultSlot, para que la IA los dispare.
+
+PASO 4 - Configurar BP_DinoCarnotauro (/Game/Excavacion/IA/BP_DinoCarnotauro)
+IMPORTANTE: antes de cambiar nada, duplica el blueprint a /Game/Excavacion/IA/BP_DinoCarnotauro_Backup y no lo uses. Luego en el original:
+1. Mesh: Skeletal Mesh = SKM_Carnotauro, Anim Class = ABP_Carnotauro_Montura, Animation Mode = Use Animation Blueprint. Ajusta Location Z del Mesh a -(Capsule Half Height) y Rotation Yaw -90 solo si el dino queda de lado (el FBX esta exportado con -Y adelante).
+2. Capsule: Half Height 120, Radius 90. Collision Preset Pawn.
+3. Mesh collision: NoCollision y Generate Overlap Events apagado. La colision es la capsula.
+4. Agrega un componente Scene llamado PuntoMontura, attached al Mesh en el socket Socket_Silla_Montura (Parent Socket). Agrega una Box Collision llamada ZonaMontar (Extent 140,140,120) attached a la capsula, Collision Preset OverlapOnlyPawn.
+5. Interaccion: que el blueprint implemente BPI_Interactuable (ya existe). En el evento Interactuar: si el jugador no esta montado, Attach Actor To Component del jugador al PuntoMontura con regla Snap To Target, desactivar su movimiento y poner IsMounted = true. No uses Cast To entre actores del mundo: usa la interfaz. Variable booleana IsMounted en el dino y Event Dispatcher OnMonturaCambio.
+6. Compila y guarda. Sin errores ni warnings nuevos.
+
+PASO 5 - Colocar en L_Caverna
+1. Abre /Game/Excavacion/L_Caverna. Si ya hay un BP_DinoCarnotauro puesto, deja ese y solo verifica que usa el mesh nuevo; si no hay ninguno, coloca uno.
+2. Posicion: sobre el suelo transitable cerca del inicio del nivel, a unos 600 cm delante del PlayerStart. Verifica con un trazo hacia abajo que el suelo esta ahi: la base de la capsula debe tocar el suelo, sin quedar enterrada ni flotando. Orientalo mirando hacia el jugador.
+3. Comprueba que hay NavMeshBoundsVolume cubriendo ese punto; si no, extiendelo.
+4. Guarda el nivel.
+
+PASO 6 - Verificacion (reporta cada punto con OK o FALLA, sin emojis)
+- Cuantos errores y warnings de compilacion tienen BP_DinoCarnotauro, ABP_Carnotauro_Montura y L_Caverna.
+- Que SK_Carnotauro tiene Socket_Silla_Montura.
+- Que en PIE el dino sale en Idle y no en T-pose; que camina y corre al moverlo; que el rugido y la embestida se reproducen.
+- Que los materiales no salen blancos ni rosados.
+- Que los assets base anteriores, M_Carnotaurus y el retarget siguen intactos.
+No avances si un paso falla; reportalo con el texto exacto del error.
