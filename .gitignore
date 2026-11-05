@@ -1,0 +1,18 @@
+# Visual Studio / Rider
+.vs/
+.idea/
+*.sln
+*.suo
+*.user
+*.userprefs
+
+# Unreal Engine temporary & cache folders
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
